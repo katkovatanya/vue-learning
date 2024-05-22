@@ -2,17 +2,14 @@
   <div class="app">
     <h1>Страница с постами</h1>
     <div class="app__btns">
-      <my-button @click="showDialog"
-        >Создать пользователя</my-button
-      >
-      <my-select v-model="selectedSort" :options="sortOptions"/>
+      <my-button @click="showDialog">Создать пользователя</my-button>
+      <my-select v-model="selectedSort" :options="sortOptions" />
     </div>
-    <input type="text" v-model="modificatorValue" />
 
     <my-dialog v-model:show="dialogVisible">
       <post-form @create="createPost" />
     </my-dialog>
-    <post-list :posts="posts" @remove="removePost" v-if="!isPostsLoading" />
+    <post-list :posts="sortedPosts" @remove="removePost" v-if="!isPostsLoading" />
     <div v-else>Идёт загрузка...</div>
   </div>
 </template>
@@ -34,11 +31,11 @@ export default {
       posts: [],
       dialogVisible: false,
       isPostsLoading: false,
-      selectedSort: '',
+      selectedSort: "",
       sortOptions: [
-        {value: 'title', name: 'По названию'},
-        {value: 'body', name: 'По содержимому'},
-      ]
+        { value: "title", name: "По названию" },
+        { value: "body", name: "По содержимому" },
+      ],
     };
   },
   methods: {
@@ -68,6 +65,18 @@ export default {
   },
   mounted() {
     this.fetchPosts();
+  },
+  computed: {
+    sortedPosts() {
+      return [...this.posts].sort((post1, post2) => {
+        return post1[this.selectedSort]?.localeCompare(
+          post2[this.selectedSort]
+        );
+      });
+    },
+  },
+  watch: {
+
   },
 };
 </script>
